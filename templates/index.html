@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extractor de Facturas</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Extractor de Facturas</h1>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="codigos">Búsqueda por Códigos</button>
+            <button class="tab-btn" data-tab="grupos">Búsqueda por Grupos Empresariales</button>
+        </div>
+
+        <!-- TAB 1: CÓDIGOS -->
+        <div id="tab-codigos" class="tab-content active">
+            <div class="card">
+                <h2>Buscar por Códigos de Factura</h2>
+                <p>Ingresa los códigos separados por coma (ej: C1001, C1002, C1003)</p>
+
+                <div class="form-group">
+                    <label for="codigos-input">Códigos de facturas:</label>
+                    <input type="text" id="codigos-input" placeholder="C1001, C1002, C1003..." />
+                </div>
+
+                <div class="form-group">
+                    <label>Archivos PDF:</label>
+                    <div class="dropzone" id="dropzone-codigos">
+                        <p>📄 Arrastra PDFs aquí o haz clic para seleccionar</p>
+                        <input type="file" id="file-codigos" multiple accept=".pdf" />
+                    </div>
+                    <div id="files-codigos" class="file-list"></div>
+                </div>
+
+                <button class="btn-primary" id="btn-buscar-codigos">🔍 Buscar</button>
+            </div>
+
+            <div id="resultados-codigos" class="resultados hidden">
+                <h3>📋 Resultados</h3>
+                <div id="resumen-codigos"></div>
+                <div id="lista-encontradas"></div>
+                <div id="lista-no-encontradas"></div>
+                <button class="btn-download hidden" id="btn-descargar-pdf">📥 Descargar PDF Combinado</button>
+            </div>
+        </div>
+
+        <!-- TAB 2: GRUPOS -->
+        <div id="tab-grupos" class="tab-content">
+            <div class="card">
+                <h2>Buscar por Grupos Empresariales</h2>
+                <p>Sube el archivo Excel con las facturas y los grupos empresariales</p>
+
+                <div class="form-group">
+                    <label for="excel-input">Archivo Excel:</label>
+                    <div class="dropzone" id="dropzone-excel">
+                        <p>📊 Arrastra el Excel aquí o haz clic para seleccionar</p>
+                        <input type="file" id="file-excel" accept=".xlsx,.xls" />
+                    </div>
+                    <div id="file-excel-name" class="file-name"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Archivos PDF:</label>
+                    <div class="dropzone" id="dropzone-grupos">
+                        <p>📄 Arrastra PDFs aquí o haz clic para seleccionar</p>
+                        <input type="file" id="file-grupos" multiple accept=".pdf" />
+                    </div>
+                    <div id="files-grupos" class="file-list"></div>
+                </div>
+
+                <button class="btn-primary" id="btn-buscar-grupos">🔍 Buscar</button>
+            </div>
+
+            <div id="resultados-grupos" class="resultados hidden">
+                <h3>📋 Resultados por Grupo</h3>
+                <div id="resumen-grupos"></div>
+                <div id="lista-grupos"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

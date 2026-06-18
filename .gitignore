@@ -1,0 +1,10 @@
+# No subir
+GRUPOS_EMPRESARIALES/
+GRUPOS_EMPRESARIALES.zip
+pdfs/
+FACTURAS_EXTRAIDAS/
+facturas_no_encontradas.xlsx
+*.pyc
+__pycache__/
+venv/
+.env
