@@ -15,6 +15,10 @@ import pandas as pd
 app = Flask(__name__)
 CORS(app)
 
+@app.before_serving
+def startup():
+    print("STARTUP OK - Flask app initialized")
+
 # ================= CONFIG =================
 
 COL_FACTURA = "Factura"
@@ -76,9 +80,9 @@ def buscar_codigos():
 
         for ruta in temp_paths:
             try:
-                with pdfplumber.open(ruta) as pdf:
-                    reader = PdfReader(ruta)
+                reader = PdfReader(ruta)
 
+                with pdfplumber.open(ruta) as pdf:
                     for i, page in enumerate(pdf.pages):
                         texto = (page.extract_text() or "").replace(" ", "").replace("\n", "")
 
@@ -163,22 +167,20 @@ def buscar_grupos():
 
         for ruta in temp_paths:
             try:
-                reader = PdfReader(ruta)
+                with pdfplumber.open(ruta) as pdf:
+                    for i, page in enumerate(pdf.pages):
+                        texto = (page.extract_text() or "").replace(" ", "").replace("\n", "")
 
-                for i, page in enumerate(reader.pages):
-                    texto = page.extract_text() or ""
-                    texto = texto.replace(" ", "").replace("\n", "")
+                        for factura in list(no_encontradas):
+                            if factura in texto:
+                                encontrada = (ruta, i)
+                                encontradas[factura].append(encontrada)
 
-                    for factura in list(no_encontradas):
-                        if factura in texto:
-                            encontrada = (ruta, i)
-                            encontradas[factura].append(encontrada)
+                                # Página siguiente
+                                if i + 1 < len(pdf.pages):
+                                    encontradas[factura].append((ruta, i + 1))
 
-                            # Página siguiente
-                            if i + 1 < len(reader.pages):
-                                encontradas[factura].append((ruta, i + 1))
-
-                            no_encontradas.discard(factura)
+                                no_encontradas.discard(factura)
 
             except Exception:
                 continue
