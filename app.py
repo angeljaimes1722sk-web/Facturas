@@ -160,22 +160,22 @@ def buscar_grupos():
 
         for ruta in temp_paths:
             try:
-                with pdfplumber.open(ruta) as pdf:
-                    reader = PdfReader(ruta)
+                reader = PdfReader(ruta)
 
-                    for i, page in enumerate(pdf.pages):
-                        texto = (page.extract_text() or "").replace(" ", "").replace("\n", "")
+                for i, page in enumerate(reader.pages):
+                    texto = page.extract_text() or ""
+                    texto = texto.replace(" ", "").replace("\n", "")
 
-                        for factura in list(no_encontradas):
-                            if factura in texto:
-                                encontrada = (ruta, i, reader)
-                                encontradas[factura].append(encontrada)
+                    for factura in list(no_encontradas):
+                        if factura in texto:
+                            encontrada = (ruta, i)
+                            encontradas[factura].append(encontrada)
 
-                                # Página siguiente
-                                if i + 1 < len(reader.pages):
-                                    encontradas[factura].append((ruta, i + 1, reader))
+                            # Página siguiente
+                            if i + 1 < len(reader.pages):
+                                encontradas[factura].append((ruta, i + 1))
 
-                                no_encontradas.discard(factura)
+                            no_encontradas.discard(factura)
 
             except Exception as e:
                 continue
@@ -193,7 +193,7 @@ def buscar_grupos():
                 factura = str(fila[COL_FACTURA])
                 if factura in encontradas:
                     pages_info = []
-                    for ruta, i, reader in encontradas[factura]:
+                    for ruta, i in encontradas[factura]:
                         key = (ruta, i)
                         if key not in seen_pages:
                             seen_pages.add(key)
