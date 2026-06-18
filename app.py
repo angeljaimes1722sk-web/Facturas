@@ -3,7 +3,7 @@ import re
 import io
 import tempfile
 import base64
-import traceback
+
 from collections import defaultdict
 
 from flask import Flask, render_template, request, jsonify, send_file
@@ -180,9 +180,7 @@ def buscar_grupos():
 
                             no_encontradas.discard(factura)
 
-            except Exception as e:
-                print(f"Error leyendo PDF {ruta}: {e}")
-                traceback.print_exc()
+            except Exception:
                 continue
 
         # Construir resultado por grupo
@@ -216,9 +214,7 @@ def buscar_grupos():
         })
 
     except Exception as e:
-        print(f"Error general en buscar_grupos: {e}")
-        traceback.print_exc()
-        return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
+        return jsonify({"error": str(e)}), 500
 
     finally:
         for p in temp_paths:
