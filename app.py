@@ -6,11 +6,13 @@ import base64
 from collections import defaultdict
 
 from flask import Flask, render_template, request, jsonify, send_file
+from flask_cors import CORS
 from PyPDF2 import PdfReader, PdfWriter
 import pdfplumber
 import pandas as pd
 
 app = Flask(__name__)
+CORS(app)
 
 # ================= CONFIG =================
 
