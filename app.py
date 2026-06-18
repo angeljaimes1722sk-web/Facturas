@@ -3,6 +3,7 @@ import re
 import io
 import tempfile
 import base64
+import traceback
 from collections import defaultdict
 
 from flask import Flask, render_template, request, jsonify, send_file
@@ -138,21 +139,21 @@ def buscar_grupos():
     if not excel_file:
         return jsonify({"error": "No se subió Excel"}), 400
 
-    # Leer Excel
-    df = pd.read_excel(excel_file)
-    df[COL_FACTURA] = df[COL_FACTURA].astype(str)
-    df[COL_GRUPO] = df[COL_GRUPO].apply(limpiar)
-    df = df[df[COL_GRUPO] != ""]
-
-    grupos_validos = df[COL_GRUPO].unique()
-    facturas = set(df[COL_FACTURA].tolist())
-    no_encontradas = set(facturas)
-    encontradas = defaultdict(list)
-
     temp_dir = tempfile.mkdtemp()
     temp_paths = []
 
     try:
+        # Leer Excel
+        df = pd.read_excel(excel_file)
+        df[COL_FACTURA] = df[COL_FACTURA].astype(str)
+        df[COL_GRUPO] = df[COL_GRUPO].apply(limpiar)
+        df = df[df[COL_GRUPO] != ""]
+
+        grupos_validos = df[COL_GRUPO].unique()
+        facturas = set(df[COL_FACTURA].tolist())
+        no_encontradas = set(facturas)
+        encontradas = defaultdict(list)
+
         for file in request.files.getlist("pdfs"):
             if not file.filename.endswith(".pdf"):
                 continue
@@ -180,6 +181,8 @@ def buscar_grupos():
                             no_encontradas.discard(factura)
 
             except Exception as e:
+                print(f"Error leyendo PDF {ruta}: {e}")
+                traceback.print_exc()
                 continue
 
         # Construir resultado por grupo
@@ -211,6 +214,11 @@ def buscar_grupos():
             "total_grupos": len(grupos_resultado),
             "no_encontradas": list(no_encontradas)
         })
+
+    except Exception as e:
+        print(f"Error general en buscar_grupos: {e}")
+        traceback.print_exc()
+        return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
 
     finally:
         for p in temp_paths:
