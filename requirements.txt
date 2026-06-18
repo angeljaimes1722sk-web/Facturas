@@ -1,4 +1,5 @@
 flask
+gunicorn
 pdfplumber
 PyPDF2
 pandas
