@@ -15,10 +15,6 @@ import pandas as pd
 app = Flask(__name__)
 CORS(app)
 
-@app.before_serving
-def startup():
-    print("STARTUP OK - Flask app initialized")
-
 # ================= CONFIG =================
 
 COL_FACTURA = "Factura"
