@@ -122,7 +122,14 @@ document.getElementById('btn-buscar-codigos').addEventListener('click', async ()
             body: formData
         });
 
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            alert('Error del servidor: ' + text.substring(0, 200));
+            return;
+        }
 
         pdfGlobalBase64 = data.pdf_global || null;
 
@@ -221,7 +228,14 @@ document.getElementById('btn-buscar-grupos').addEventListener('click', async () 
             body: formData
         });
 
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            alert('Error del servidor: ' + text.substring(0, 200));
+            return;
+        }
 
         const container = document.getElementById('resultados-grupos');
         container.classList.remove('hidden');
